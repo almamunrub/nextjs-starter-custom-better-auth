@@ -114,9 +114,9 @@ function UserInfoComponentMain() {
       ) : (
         <>
           <Card className='p-6'>
-            <div className='flex flex-col items-start gap-8 lg:flex-row'>
+            <div className='flex flex-col gap-8 lg:flex-row lg:items-start'>
               {/* Left Side - Upload Area */}
-              <div className='flex w-1/2 flex-col items-center text-center'>
+              <div className='flex w-full flex-col items-center text-center lg:w-1/2'>
                 {imagePreview.length > 0 ? (
                   <ImagePreviewer
                     imageFiles={imageFiles}
@@ -131,19 +131,21 @@ function UserInfoComponentMain() {
                     setImagePreview={setImagePreview}
                   />
                 )}
+
                 <p className='text-muted-foreground mt-4 text-xs'>
-                  Recommended: JPG or PNG, 400x400px (Max 1MB)
+                  Recommended: JPG or PNG, 400×400px (Max 1MB)
                 </p>
               </div>
 
               {/* Right Side - Administrator/User Status */}
-              <div className='flex w-1/2 flex-col items-end justify-end gap-3 pt-4 lg:pt-0'>
+              <div className='flex w-full justify-center lg:w-1/2 lg:justify-end'>
                 <div className='flex items-center gap-3'>
                   <div className='relative flex size-3'>
-                    <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75'></span>
-                    <span className='relative inline-flex size-3 rounded-full bg-emerald-500'></span>
+                    <span className='absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-75' />
+                    <span className='relative inline-flex size-3 rounded-full bg-emerald-500' />
                   </div>
-                  <h3 className='text-lg font-semibold'>
+
+                  <h3 className='text-center text-lg font-semibold lg:text-right'>
                     {user?.role.replaceAll('_', ' ')}
                   </h3>
                 </div>
