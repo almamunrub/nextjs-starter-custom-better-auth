@@ -1,14 +1,10 @@
 'use server'
 
-import { httpClient } from '@/lib/axios/httpClient'
+import { httpClient } from '@/lib/fetch/httpClient'
 
 export const updateUserProfile = async (formData: FormData) => {
   try {
-    const response = await httpClient.patch<any>('/users/profile', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
+    const response = await httpClient.patch<any>('/users/profile', formData)
 
     return {
       success: true,

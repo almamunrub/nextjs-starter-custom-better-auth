@@ -2,11 +2,11 @@ import { NavSection } from '@/types'
 
 export const userNavItems: NavSection[] = [
   {
-    title: 'Users Management',
+    title: 'Player Management',
     items: [
       {
-        title: 'Users',
-        href: '/user/dashboard',
+        title: 'Player',
+        href: '/player/players-management',
         icon: 'Calender',
       },
     ],

@@ -10,7 +10,7 @@ export async function GET(req: NextRequest) {
   const accessToken = url.searchParams.get('accessToken')
   const refreshToken = url.searchParams.get('refreshToken')
   const sessionToken = url.searchParams.get('sessionToken')
-  const redirectPath = url.searchParams.get('redirect') || '/dashboard'
+  const redirectPath = url.searchParams.get('redirect') || '/my-profile'
 
   // 1. Guard clause: Ensure we have the required tokens
   if (!accessToken || !refreshToken) {

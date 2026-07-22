@@ -132,6 +132,7 @@ export default function ChangePasswordForm() {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className='pr-10'
+                  required
                 />
 
                 <button
@@ -171,6 +172,7 @@ export default function ChangePasswordForm() {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className='pr-10'
+                  required
                 />
 
                 <button
@@ -212,6 +214,7 @@ export default function ChangePasswordForm() {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className='pr-10'
+                  required
                 />
 
                 <button

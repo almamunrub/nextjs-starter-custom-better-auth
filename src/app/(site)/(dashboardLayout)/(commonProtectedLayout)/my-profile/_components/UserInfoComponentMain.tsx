@@ -107,6 +107,7 @@ function UserInfoComponentMain() {
     }
   }
 
+  // console.log(user, 'user')
   return (
     <div className='mx-auto flex max-w-2xl flex-col gap-4'>
       {isLoading ? (

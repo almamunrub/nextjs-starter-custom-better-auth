@@ -6,11 +6,10 @@ import {
   isValidRedirectForRole,
   UserRole,
 } from '@/lib/authUtils'
-import { ApiError } from '@/lib/axios/errorUtils'
-import { httpClient } from '@/lib/axios/httpClient'
+import { ApiError } from '@/lib/fetch/errorUtils'
+import { httpClient } from '@/lib/fetch/httpClient'
 import { deleteCookie } from '@/lib/cookieUtils'
 import { setTokenInCookies } from '@/lib/tokenUtils'
-import { ApiErrorResponse } from '@/types/api.types'
 import { ILoginResponse } from '@/types/auth.types'
 import { ILoginPayload, loginZodSchema } from '@/zod/auth.validation'
 import { redirect } from 'next/navigation'
@@ -78,21 +77,21 @@ export const loginAction = async (
   }
 }
 
-export const logoutAction = async () => {
-  // 1. Notify the backend to invalidate the token
+export const logoutAction = async (redirectTo = '/login') => {
   try {
     await httpClient.post('/auth/logout', {})
-  } catch (e) {
-    console.error('Backend logout failed:', e)
-    // We continue execution even if the backend fails,
-    // so we can still clear the local browser cookies.
+  } catch (error) {
+    if (!(error instanceof ApiError)) {
+      console.error(error)
+    }
   }
 
-  // 2. Clear the cookies directly from the user's browser
-  await deleteCookie('accessToken')
-  await deleteCookie('refreshToken')
-  await deleteCookie('better-auth.session_token')
-  await deleteCookie('better-auth.session_data')
+  // Remove Next.js cookies
+  await Promise.all([
+    deleteCookie('accessToken'),
+    deleteCookie('refreshToken'),
+    deleteCookie('better-auth.session_token'),
+  ])
 
-  return { success: true }
+  redirect(redirectTo)
 }

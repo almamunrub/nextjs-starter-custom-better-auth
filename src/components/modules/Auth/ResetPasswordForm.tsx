@@ -153,6 +153,7 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                 }}
                 disabled={isSubmitting}
                 containerClassName='w-full justify-center'
+                required
               >
                 <InputOTPGroup className='justify-center'>
                   <InputOTPSlot index={0} />
@@ -201,6 +202,7 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className='pr-10'
+                  required
                 />
 
                 <button
@@ -241,6 +243,7 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   onChange={handleChange}
                   disabled={isSubmitting}
                   className='pr-10'
+                  required
                 />
 
                 <button

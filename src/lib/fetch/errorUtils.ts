@@ -1,10 +1,9 @@
-import axios from 'axios'
-
 export class ApiError extends Error {
   constructor(
     message: string,
     public status?: number,
-    public code?: string
+    public code?: string,
+    public data?: any
   ) {
     super(message)
     this.name = 'ApiError'
@@ -18,14 +17,8 @@ export function normalizeError(
 ): never {
   console.error(`${method} request to ${endpoint} failed:`, error)
 
-  if (axios.isAxiosError(error)) {
-    const data = error.response?.data
-
-    throw new ApiError(
-      data?.message ?? error.message,
-      error.response?.status,
-      data?.code
-    )
+  if (error instanceof ApiError) {
+    throw error
   }
 
   throw error instanceof Error

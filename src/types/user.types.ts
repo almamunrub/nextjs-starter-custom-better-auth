@@ -4,6 +4,7 @@ export interface IUserInfo {
   id: string
   name: string
   image?: string
+  phone?: string
   email: string
   role: UserRole
 }

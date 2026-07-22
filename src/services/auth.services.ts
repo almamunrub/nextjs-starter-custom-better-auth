@@ -1,7 +1,7 @@
 'use server'
 
 import { env } from '@/env'
-import { httpClient } from '@/lib/axios/httpClient'
+import { httpClient } from '@/lib/fetch/httpClient'
 import { setTokenInCookies } from '@/lib/tokenUtils'
 import { ResendOTPResponse } from '@/types'
 import { cookies } from 'next/headers'

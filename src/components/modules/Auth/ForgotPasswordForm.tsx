@@ -85,6 +85,7 @@ function ForgotPasswordForm() {
                 value={email}
                 onChange={handleChange}
                 disabled={isSubmitting}
+                required
               />
 
               {error && (

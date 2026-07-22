@@ -92,6 +92,7 @@ export default function VerifyEmailFrom({
           onChange={setOtp}
           disabled={isLoading}
           name='otp'
+          required
         >
           <InputOTPGroup>
             <InputOTPSlot index={0} />

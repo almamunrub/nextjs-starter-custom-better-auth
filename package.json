@@ -1,11 +1,11 @@
 {
-  "name": "jacknitti_dashboard-ARENaXL",
+  "name": "ARENaXL",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3055",
+    "dev": "next dev",
     "build": "next build",
-    "start": "next start -p 3055",
+    "start": "next start",
     "lint": "eslint"
   },
   "keywords": [],
@@ -14,7 +14,6 @@
   "dependencies": {
     "@base-ui/react": "^1.6.0",
     "@t3-oss/env-nextjs": "^0.13.11",
-    "axios": "^1.18.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",

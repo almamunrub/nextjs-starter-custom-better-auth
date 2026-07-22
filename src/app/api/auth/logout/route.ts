@@ -9,7 +9,6 @@ export async function GET() {
   response.cookies.delete('accessToken')
   response.cookies.delete('refreshToken')
   response.cookies.delete('better-auth.session_token')
-  response.cookies.delete('better-auth.session_data')
 
   return response
 }

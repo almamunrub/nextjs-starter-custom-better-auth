@@ -13,7 +13,6 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
-import { Alert, AlertDescription } from '@/components/ui/alert'
 import { ILoginPayload, loginZodSchema } from '@/zod/auth.validation'
 import { env } from '@/env'
 import { loginAction } from '@/actions/auth.actions'
@@ -25,30 +24,22 @@ interface LoginFormProps {
 }
 
 export default function LoginForm({ redirectPath }: LoginFormProps) {
-  const initialFormData: ILoginPayload = {
+  const [formData, setFormData] = useState({
     email: '',
     password: '',
-  }
-
-  const [formData, setFormData] = useState<ILoginPayload>(initialFormData)
-
-  const [errors, setErrors] = useState<{
-    email?: string
-    password?: string
-  }>({})
-
-  const [serverError, setServerError] = useState('')
+  })
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
 
+  const pathname = usePathname()
+
   const resetForm = () => {
-    setFormData(initialFormData)
-    setErrors({})
-    setServerError('')
+    setFormData({
+      email: '',
+      password: '',
+    })
     setShowPassword(false)
   }
-
-  const pathname = usePathname()
 
   useEffect(() => {
     if (pathname === '/login') {
@@ -61,41 +52,15 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
       ...prev,
       [field]: value,
     }))
-
-    // Clear field error and server error while typing
-    setErrors(prev => ({
-      ...prev,
-      [field]: undefined,
-    }))
-
-    if (serverError) {
-      setServerError('')
-    }
   }
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    setServerError('')
-    setErrors({})
-
     const parsed = loginZodSchema.safeParse(formData)
 
     if (!parsed.success) {
-      const newErrors: {
-        email?: string
-        password?: string
-      } = {}
-
-      parsed.error.issues.forEach(issue => {
-        const field = issue.path[0] as keyof typeof newErrors
-
-        if (field && !newErrors[field]) {
-          newErrors[field] = issue.message
-        }
-      })
-
-      setErrors(newErrors)
+      toast.error(parsed.error.issues[0]?.message)
       return
     }
 
@@ -110,11 +75,19 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
       }
 
       toast.success(result.message)
-
       resetForm()
     } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'digest' in error &&
+        typeof (error as any).digest === 'string' &&
+        (error as any).digest.startsWith('NEXT_REDIRECT')
+      ) {
+        throw error // let Next.js handle the actual redirect, don't swallow it
+      }
       console.error(error)
-      setServerError('Something went wrong.')
+      toast.error('Something went wrong.')
     } finally {
       setLoading(false)
     }
@@ -139,11 +112,8 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
               placeholder='Enter your email'
               value={formData.email}
               onChange={e => handleChange('email', e.target.value)}
+              required
             />
-
-            {errors.email && (
-              <p className='text-destructive text-sm'>{errors.email}</p>
-            )}
           </div>
 
           <div className='space-y-2'>
@@ -155,6 +125,7 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
                 placeholder='Enter password'
                 value={formData.password}
                 onChange={e => handleChange('password', e.target.value)}
+                required
                 className='pr-10'
               />
 
@@ -172,10 +143,6 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
                 )}
               </Button>
             </div>
-
-            {errors.password && (
-              <p className='text-destructive text-sm'>{errors.password}</p>
-            )}
           </div>
 
           <div className='text-right'>
@@ -186,12 +153,6 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
               Forgot password?
             </Link>
           </div>
-
-          {serverError && (
-            <Alert variant='destructive'>
-              <AlertDescription>{serverError}</AlertDescription>
-            </Alert>
-          )}
 
           <Button type='submit' className='w-full' disabled={loading}>
             {loading ? 'Logging In...' : 'Log In'}
@@ -215,7 +176,9 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
           className='w-full'
           onClick={() => {
             const baseUrl = env.NEXT_PUBLIC_API_URL
-            window.location.href = `${baseUrl}/auth/login/google`
+            window.location.href = `${baseUrl}/auth/login/google?redirectPath=${encodeURIComponent(
+              redirectPath ?? ''
+            )}`
           }}
         >
           Sign in with Google

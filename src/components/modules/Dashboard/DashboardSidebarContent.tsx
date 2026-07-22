@@ -45,8 +45,8 @@ const DashboardSidebarContent = ({
       {/* Navigation Area */}
       <ScrollArea className='flex-1 px-3 py-4'>
         <nav className='space-y-6'>
-          {navItems.map((section, sectionId) => (
-            <div key={sectionId}>
+          {navItems.map((section, index: number) => (
+            <div key={index}>
               {section.title && (
                 <h4 className='text-muted-foreground mb-2 px-3 text-xs font-semibold tracking-wider uppercase'>
                   {section.title}
@@ -77,9 +77,7 @@ const DashboardSidebarContent = ({
                 })}
               </div>
 
-              {sectionId < navItems.length - 1 && (
-                <Separator className='my-4' />
-              )}
+              {index < navItems.length - 1 && <Separator className='my-4' />}
             </div>
           ))}
         </nav>
