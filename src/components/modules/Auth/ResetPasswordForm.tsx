@@ -9,11 +9,6 @@ import { resendOTP, resetPassword } from '@/services/auth.services'
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp'
 import { Eye, EyeOff } from 'lucide-react'
 import {
   Card,
@@ -26,6 +21,7 @@ import {
   formatCountdown,
   useResendCountdown,
 } from '@/hooks/use-resend-countdown'
+import { OTPInput } from '@/components/motion/otp-input'
 
 interface ResetPasswordFormProps {
   email?: string
@@ -53,7 +49,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
       ...prev,
       [name]: value,
     }))
-    // Clear the specific error for the field being typed in
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
@@ -62,7 +57,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault()
 
-    // Safety check in case email is missing from the URL
     if (!email) {
       toast.error('Missing email address. Please request a new password reset.')
       return
@@ -72,13 +66,8 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
     setErrors({})
 
     try {
-      // 1. Validate the form data
       const validatedData = resetPasswordSchema.parse(formData)
-
-      // 2. Call your API
       await resetPassword(email, validatedData.otp, validatedData.newPassword)
-
-      // 3. Show success notification
       toast.success('Password reset successfully! You can now log in.')
 
       setFormData({
@@ -87,11 +76,9 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
         confirmPassword: '',
       })
 
-      // 4. Redirect to login
       router.push('/login')
     } catch (err) {
       if (err instanceof z.ZodError) {
-        // Map Zod errors to our state object
         const newErrors: Record<string, string> = {}
         err.issues.forEach(issue => {
           if (issue.path[0]) {
@@ -100,7 +87,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
         })
         setErrors(newErrors)
       } else if (err instanceof Error) {
-        // Handle API errors
         toast.error(err.message)
       } else {
         toast.error('An unexpected error occurred.')
@@ -131,7 +117,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
     <Card className='mx-auto w-full max-w-md shadow'>
       <CardHeader className='space-y-2 text-center'>
         <CardTitle className='text-2xl font-bold'>Reset Password</CardTitle>
-
         <CardDescription>
           Enter the 6-digit OTP sent to your email and create a new password.
         </CardDescription>
@@ -143,33 +128,19 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
             <Field>
               <FieldLabel htmlFor='otp'>One-Time Password (OTP)</FieldLabel>
 
-              <InputOTP
-                id='otp'
-                maxLength={6}
-                value={formData.otp}
-                onChange={value => {
-                  setFormData(prev => ({ ...prev, otp: value }))
-                  if (errors.otp) setErrors(prev => ({ ...prev, otp: '' }))
-                }}
-                disabled={isSubmitting}
-                containerClassName='w-full justify-center'
-                required
-              >
-                <InputOTPGroup className='justify-center'>
-                  <InputOTPSlot index={0} />
-                  <InputOTPSlot index={1} />
-                  <InputOTPSlot index={2} />
-                  <InputOTPSlot index={3} />
-                  <InputOTPSlot index={4} />
-                  <InputOTPSlot index={5} />
-                </InputOTPGroup>
-              </InputOTP>
+              <div className='flex w-full justify-center'>
+                <OTPInput
+                  value={formData.otp}
+                  onChange={value => {
+                    setFormData(prev => ({ ...prev, otp: value }))
+                    if (errors.otp) setErrors(prev => ({ ...prev, otp: '' }))
+                  }}
+                  status={errors.otp ? 'error' : 'idle'}
+                  errorMessage={errors.otp}
+                />
+              </div>
 
-              {errors.otp && (
-                <p className='text-destructive mt-2 text-sm'>{errors.otp}</p>
-              )}
-
-              <div className='mt-2 text-center text-sm'>
+              <div className='mt-4 text-center text-sm'>
                 {canResend ? (
                   <button
                     type='button'
@@ -191,7 +162,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
 
             <Field>
               <FieldLabel htmlFor='newPassword'>New Password</FieldLabel>
-
               <div className='relative'>
                 <Input
                   id='newPassword'
@@ -204,7 +174,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   className='pr-10'
                   required
                 />
-
                 <button
                   type='button'
                   onClick={() => setShowNewPassword(prev => !prev)}
@@ -220,7 +189,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   )}
                 </button>
               </div>
-
               {errors.newPassword && (
                 <p className='text-destructive mt-2 text-sm'>
                   {errors.newPassword}
@@ -232,7 +200,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
               <FieldLabel htmlFor='confirmPassword'>
                 Confirm New Password
               </FieldLabel>
-
               <div className='relative'>
                 <Input
                   id='confirmPassword'
@@ -245,7 +212,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   className='pr-10'
                   required
                 />
-
                 <button
                   type='button'
                   onClick={() => setShowConfirmPassword(prev => !prev)}
@@ -261,7 +227,6 @@ function ResetPasswordForm({ email }: ResetPasswordFormProps) {
                   )}
                 </button>
               </div>
-
               {errors.confirmPassword && (
                 <p className='text-destructive mt-2 text-sm'>
                   {errors.confirmPassword}

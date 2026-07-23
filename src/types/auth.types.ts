@@ -14,6 +14,12 @@ export interface ILoginResponse {
   }
 }
 
+export interface LoginActionResponse {
+  success: boolean
+  message: string
+  redirectTo?: string
+}
+
 export interface ResendOTPResponse {
   success: boolean
   message?: string

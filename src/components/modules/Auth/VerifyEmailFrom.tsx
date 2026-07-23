@@ -4,17 +4,13 @@ import { useState } from 'react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import {
-  InputOTP,
-  InputOTPGroup,
-  InputOTPSlot,
-} from '@/components/ui/input-otp'
 import { resendOTP, verifyEmail } from '@/services/auth.services'
 import { useRouter } from 'next/navigation'
 import {
   formatCountdown,
   useResendCountdown,
 } from '@/hooks/use-resend-countdown'
+import { OTPInput } from '@/components/motion/otp-input'
 
 interface VerifyEmailFromProps {
   redirectPath?: string
@@ -86,24 +82,14 @@ export default function VerifyEmailFrom({
         onSubmit={handleSubmit}
         className='flex flex-col items-center gap-6'
       >
-        <InputOTP
-          maxLength={6}
+        <OTPInput
           value={otp}
           onChange={setOtp}
-          disabled={isLoading}
-          name='otp'
-          required
-        >
-          <InputOTPGroup>
-            <InputOTPSlot index={0} />
-            <InputOTPSlot index={1} />
-            <InputOTPSlot index={2} />
-            <InputOTPSlot index={3} />
-            <InputOTPSlot index={4} />
-            <InputOTPSlot index={5} />
-          </InputOTPGroup>
-        </InputOTP>
+          status={isLoading ? 'idle' : 'idle'}
+          errorMessage='Wrong code, try again.'
+        />
 
+        {/* Hidden input kept intact so formData.get('otp') continues to work */}
         <input type='hidden' name='otp' value={otp} />
 
         <Button type='submit' disabled={isLoading || otp.length !== 6}>

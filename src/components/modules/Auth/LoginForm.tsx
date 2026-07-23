@@ -9,7 +9,6 @@ import {
   Card,
   CardHeader,
   CardContent,
-  CardFooter,
   CardTitle,
   CardDescription,
 } from '@/components/ui/card'
@@ -17,7 +16,7 @@ import { ILoginPayload, loginZodSchema } from '@/zod/auth.validation'
 import { env } from '@/env'
 import { loginAction } from '@/actions/auth.actions'
 import { toast } from 'sonner'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 interface LoginFormProps {
   redirectPath?: string
@@ -30,6 +29,7 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
   })
   const [loading, setLoading] = useState(false)
   const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
 
   const pathname = usePathname()
 
@@ -75,26 +75,23 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
       }
 
       toast.success(result.message)
+
       resetForm()
+
+      setTimeout(() => {
+        if (result.redirectTo) {
+          router.push(result.redirectTo)
+        }
+      }, 800)
     } catch (error) {
-      if (
-        error &&
-        typeof error === 'object' &&
-        'digest' in error &&
-        typeof (error as any).digest === 'string' &&
-        (error as any).digest.startsWith('NEXT_REDIRECT')
-      ) {
-        throw error // let Next.js handle the actual redirect, don't swallow it
-      }
       console.error(error)
       toast.error('Something went wrong.')
     } finally {
       setLoading(false)
     }
   }
-
   return (
-    <Card className='mx-auto w-full max-w-md shadow-md'>
+    <Card className='mx-auto w-full max-w-md shadow'>
       <CardHeader className='text-center'>
         <CardTitle>Welcome Back!</CardTitle>
         <CardDescription>
