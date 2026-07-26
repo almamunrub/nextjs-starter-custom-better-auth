@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { ArrowRight, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import {
@@ -17,6 +17,7 @@ import { env } from '@/env'
 import { loginAction } from '@/actions/auth.actions'
 import { toast } from 'sonner'
 import { usePathname, useRouter } from 'next/navigation'
+import { GoogleMark } from '@/assets/GoogleMark'
 
 interface LoginFormProps {
   redirectPath?: string
@@ -100,6 +101,32 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
       </CardHeader>
 
       <CardContent>
+        <Button
+          variant='outline'
+          className='group w-full'
+          onClick={() => {
+            const baseUrl = env.NEXT_PUBLIC_API_URL
+            window.location.href = `${baseUrl}/auth/login/google?redirectPath=${encodeURIComponent(
+              redirectPath ?? ''
+            )}`
+          }}
+        >
+          <GoogleMark />
+          <span>Continue with Google</span>
+          <ArrowRight className='size-4 -translate-x-1 text-black opacity-0 transition-all group-hover:translate-x-0 group-hover:opacity-60' />
+        </Button>
+
+        <div className='relative my-6'>
+          <div className='absolute inset-0 flex items-center'>
+            <div className='w-full border-t' />
+          </div>
+
+          <div className='relative flex justify-center text-sm'>
+            <span className='bg-background text-muted-foreground px-2'>
+              Or continue with
+            </span>
+          </div>
+        </div>
         <form onSubmit={handleSubmit} className='space-y-4'>
           <div className='space-y-2'>
             <label className='text-sm font-medium'>Email</label>
@@ -155,31 +182,6 @@ export default function LoginForm({ redirectPath }: LoginFormProps) {
             {loading ? 'Logging In...' : 'Log In'}
           </Button>
         </form>
-
-        <div className='relative my-6'>
-          <div className='absolute inset-0 flex items-center'>
-            <div className='w-full border-t' />
-          </div>
-
-          <div className='relative flex justify-center text-sm'>
-            <span className='bg-background text-muted-foreground px-2'>
-              Or continue with
-            </span>
-          </div>
-        </div>
-
-        <Button
-          variant='outline'
-          className='w-full'
-          onClick={() => {
-            const baseUrl = env.NEXT_PUBLIC_API_URL
-            window.location.href = `${baseUrl}/auth/login/google?redirectPath=${encodeURIComponent(
-              redirectPath ?? ''
-            )}`
-          }}
-        >
-          Sign in with Google
-        </Button>
       </CardContent>
 
       {/* <CardFooter className='justify-center border-t pt-4'>
