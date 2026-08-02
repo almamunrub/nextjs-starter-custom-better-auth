@@ -1,1 +1,1 @@
-# Frontend Starter | [Backend Starter](https://github.com/progmamun/better-auth-express-boilerplate)
+# Frontend Starter | [Backend Starter](https://github.com/almamunrub/better-auth-express-boilerplate)
