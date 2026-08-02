@@ -1,10 +1,13 @@
 'use server'
 
 import { httpClient } from '@/lib/fetch/httpClient'
+import { revalidatePath } from 'next/cache'
 
 export const updateUserProfile = async (formData: FormData) => {
   try {
     const response = await httpClient.patch<any>('/users/profile', formData)
+
+    revalidatePath('/')
 
     return {
       success: true,
