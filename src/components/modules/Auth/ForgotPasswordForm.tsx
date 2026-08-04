@@ -16,6 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
+import { Send } from 'lucide-react'
 
 function ForgotPasswordForm() {
   const router = useRouter()
@@ -94,6 +95,7 @@ function ForgotPasswordForm() {
             </Field>
 
             <Button type='submit' className='w-full' disabled={isSubmitting}>
+              <Send className='mr-2 h-4 w-4' />
               {isSubmitting ? 'Sending OTP...' : 'Send OTP'}
             </Button>
           </FieldGroup>

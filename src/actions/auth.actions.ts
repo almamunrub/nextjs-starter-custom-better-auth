@@ -79,7 +79,7 @@ export const loginAction = async (
   }
 }
 
-export const logoutAction = async (redirectTo = '/login') => {
+export const logoutAction = async (redirectTo = '/') => {
   try {
     await httpClient.post('/auth/logout', {})
   } catch (error) {
